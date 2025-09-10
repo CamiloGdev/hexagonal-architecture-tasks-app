@@ -1,0 +1,23 @@
+{
+  "name": "tasks_fracttal_back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "exports": "./dist/main.js",
+  "scripts": {
+    "dev": "tsx watch ./src/main.ts",
+    "start": "node dist/main.mjs",
+    "build": "pkgroll"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "pkgroll": "^2.15.4",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.7.1"
+}
