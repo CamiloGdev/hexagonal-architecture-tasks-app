@@ -1,3 +1,6 @@
+import { AuthLogin } from '../../Auth/application/AuthLogin/AuthLogin';
+import { AuthRegister } from '../../Auth/application/AuthRegister/AuthRegister';
+import { BcryptPasswordHasher } from '../../Auth/infrastructure/BcryptPasswordHasher';
 import { UserCreate } from '../../User/application/UserCreate/UserCreate';
 import { UserDelete } from '../../User/application/UserDelete/UserDelete';
 import { UserEdit } from '../../User/application/UserEdit/UserEdit';
@@ -8,6 +11,7 @@ import { PostgresUserRepository } from '../../User/infrastructure/PostgresUserRe
 const userRepository = new PostgresUserRepository(
   process.env.DATABASE_URL || '',
 );
+const passwordHasher = new BcryptPasswordHasher();
 
 export const ServiceContainer = {
   user: {
@@ -16,5 +20,9 @@ export const ServiceContainer = {
     create: new UserCreate(userRepository),
     edit: new UserEdit(userRepository),
     delete: new UserDelete(userRepository),
+  },
+  auth: {
+    register: new AuthRegister(userRepository, passwordHasher),
+    login: new AuthLogin(userRepository, passwordHasher),
   },
 };
