@@ -10,7 +10,9 @@
     "start": "node dist/main.mjs",
     "build": "pkgroll"
   },
-  "dependencies": {},
+  "dependencies": {
+    "zod": "^4.1.5"
+  },
   "devDependencies": {
     "pkgroll": "^2.15.4",
     "tsx": "^4.20.5",
