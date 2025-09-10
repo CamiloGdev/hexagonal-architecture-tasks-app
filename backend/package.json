@@ -11,9 +11,15 @@
     "build": "pkgroll",
     "migrate:create": "node-pg-migrate create --migration-file-language sql",
     "migrate:up": "node-pg-migrate up",
-    "migrate:down": "node-pg-migrate down"
+    "migrate:down": "node-pg-migrate down",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:reset": "prisma migrate reset",
+    "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@prisma/client": "^6.15.0",
     "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "pg": "^8.16.3",
@@ -26,7 +32,8 @@
     "node-pg-migrate": "^8.0.3",
     "pkgroll": "^2.15.4",
     "tsx": "^4.20.5",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "prisma": "^6.15.0"
   },
   "keywords": [],
   "author": "",
