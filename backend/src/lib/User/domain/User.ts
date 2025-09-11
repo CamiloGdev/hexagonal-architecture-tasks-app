@@ -37,7 +37,6 @@ export class User {
     return new User(name, email, password);
   }
 
-
   public nameAndEmail() {
     return `${this.name.value} - ${this.email.value}`;
   }
