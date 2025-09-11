@@ -21,6 +21,12 @@ export function registerExpressAuthRoutes(
     authController.login.bind(authController),
   );
 
+  // Ruta para refrescar el token de acceso
+  authRouter.post('/refresh', authController.refresh.bind(authController));
+
+  // Ruta para logout
+  authRouter.post('/logout', authController.logout.bind(authController));
+
   // Registrar las rutas de autenticación en el router principal
   router.use('/auth', authRouter);
 }

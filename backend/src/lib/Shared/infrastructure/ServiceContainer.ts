@@ -1,6 +1,7 @@
 import { AuthLogin } from '../../Auth/application/AuthLogin/AuthLogin';
 import { AuthRegister } from '../../Auth/application/AuthRegister/AuthRegister';
 import { BcryptPasswordHasher } from '../../Auth/infrastructure/BcryptPasswordHasher';
+import { JsonWebTokenService } from '../../Auth/infrastructure/JsonWebTokenService';
 import { UserCreate } from '../../User/application/UserCreate/UserCreate';
 import { UserDelete } from '../../User/application/UserDelete/UserDelete';
 import { UserEdit } from '../../User/application/UserEdit/UserEdit';
@@ -19,7 +20,6 @@ function createUserRepository(): UserRepository {
     case 'prisma': {
       return new PrismaUserRepository();
     }
-    case 'postgres':
     default: {
       return new PostgresUserRepository(databaseUrl);
     }
@@ -28,6 +28,7 @@ function createUserRepository(): UserRepository {
 
 const userRepository = createUserRepository();
 const passwordHasher = new BcryptPasswordHasher();
+const tokenService = new JsonWebTokenService();
 
 export const ServiceContainer = {
   user: {
@@ -40,5 +41,6 @@ export const ServiceContainer = {
   auth: {
     register: new AuthRegister(userRepository, passwordHasher),
     login: new AuthLogin(userRepository, passwordHasher),
+    tokenService: tokenService,
   },
 };
