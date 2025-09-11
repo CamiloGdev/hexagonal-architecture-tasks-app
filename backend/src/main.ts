@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import express, {
   type Express,
   type NextFunction,
@@ -19,6 +20,7 @@ const router = Router();
 
 // Middleware para parsear JSON
 app.use(express.json());
+app.use(cookieParser());
 
 // Configurar CORS
 app.use((req: Request, res: Response, next: NextFunction) => {
