@@ -8,6 +8,8 @@ import express, {
 } from 'express';
 import { ExpressAuthController } from './lib/Auth/infrastructure/ExpressAuthController';
 import { registerExpressAuthRoutes } from './lib/Auth/infrastructure/ExpressAuthRoutes';
+import { ExpressTaskController } from './lib/Task/infrastructure/ExpressTaskController';
+import { registerExpressTaskRoutes } from './lib/Task/infrastructure/ExpressTaskRoutes';
 import { ExpressUserController } from './lib/User/infrastructure/ExpressUserController';
 import { registerExpressUserRoutes } from './lib/User/infrastructure/ExpressUserRouter';
 
@@ -40,12 +42,16 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // Inicializar controladores
 const authController = new ExpressAuthController();
 const userController = new ExpressUserController();
+const taskController = new ExpressTaskController();
 
 // Registrar rutas de autenticación
 registerExpressAuthRoutes(router, authController);
 
 // Registrar rutas de usuario
 registerExpressUserRoutes(router, userController);
+
+// Registrar rutas de tareas
+registerExpressTaskRoutes(router, taskController);
 
 // Registrar el router principal
 app.use('/api', router);
