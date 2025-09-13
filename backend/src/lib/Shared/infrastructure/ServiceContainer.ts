@@ -2,6 +2,13 @@ import { AuthLogin } from '../../Auth/application/AuthLogin/AuthLogin';
 import { AuthRegister } from '../../Auth/application/AuthRegister/AuthRegister';
 import { BcryptPasswordHasher } from '../../Auth/infrastructure/BcryptPasswordHasher';
 import { JsonWebTokenService } from '../../Auth/infrastructure/JsonWebTokenService';
+import { CategoryCreate } from '../../Category/application/CategoryCreate/CategoryCreate';
+import { CategoryDelete } from '../../Category/application/CategoryDelete/CategoryDelete';
+import { CategoryGetAll } from '../../Category/application/CategoryGetAll/CategoryGetAll';
+import { CategoryGetOneById } from '../../Category/application/CategoryGetOneById/CategoryGetOneById';
+import { CategoryUpdate } from '../../Category/application/CategoryUpdate/CategoryUpdate';
+import type { CategoryRepository } from '../../Category/domain/CategoryRepository';
+import { PrismaCategoryRepository } from '../../Category/infrastructure/PrismaCategoryRepository';
 import { TaskCreate } from '../../Task/application/TaskCreate/TaskCreate';
 import { TaskDelete } from '../../Task/application/TaskDelete/TaskDelete';
 import { TaskGetAll } from '../../Task/application/TaskGetAll/TaskGetAll';
@@ -39,8 +46,14 @@ function createTaskRepository(): TaskRepository {
   return new PrismaTaskRepository();
 }
 
+// Factory function to create the category repository
+function createCategoryRepository(): CategoryRepository {
+  return new PrismaCategoryRepository();
+}
+
 const userRepository = createUserRepository();
 const taskRepository = createTaskRepository();
+const categoryRepository = createCategoryRepository();
 const passwordHasher = new BcryptPasswordHasher();
 const tokenService = new JsonWebTokenService();
 
@@ -64,5 +77,12 @@ export const ServiceContainer = {
     update: new TaskUpdate(taskRepository),
     delete: new TaskDelete(taskRepository),
     toggleComplete: new TaskToggleComplete(taskRepository),
+  },
+  category: {
+    create: new CategoryCreate(categoryRepository),
+    getAll: new CategoryGetAll(categoryRepository),
+    getOneById: new CategoryGetOneById(categoryRepository),
+    update: new CategoryUpdate(categoryRepository),
+    delete: new CategoryDelete(categoryRepository),
   },
 };
