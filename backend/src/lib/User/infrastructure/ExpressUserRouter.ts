@@ -11,34 +11,34 @@ export function registerExpressUserRoutes(
   const userRouter = Router();
 
   /* userRouter.get(
-    '/users/',
+    '/',
     validate(userIdSchema),
     userController.getAll.bind(userController),
   ); */
   userRouter.get(
-    '/users/:id/',
+    '/:id',
     validate(userIdSchema),
     userController.getOneById.bind(userController),
   );
   /* userRouter.post(
-    '/users/',
+    '/',
     validate(putUserSchema),
     userController.create.bind(userController),
   ); */
   userRouter.put(
-    '/users/:id',
+    '/:id',
     authMiddleware, // Middleware de protección
     validate(putUserSchema),
     userController.edit.bind(userController),
   );
   userRouter.patch(
-    '/users/:id',
+    '/:id',
     authMiddleware, // Middleware de protección
     validate(editUserSchema),
     userController.edit.bind(userController),
   );
   /* userRouter.delete(
-    '/users/:id',
+    '/:id',
     validate(userIdSchema),
     userController.delete.bind(userController),
   ); */
