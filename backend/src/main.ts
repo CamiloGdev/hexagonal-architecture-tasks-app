@@ -8,6 +8,8 @@ import express, {
 } from 'express';
 import { ExpressAuthController } from './lib/Auth/infrastructure/ExpressAuthController';
 import { registerExpressAuthRoutes } from './lib/Auth/infrastructure/ExpressAuthRoutes';
+import { ExpressCategoryController } from './lib/Category/infrastructure/ExpressCategoryController';
+import { registerExpressCategoryRoutes } from './lib/Category/infrastructure/ExpressCategoryRoutes';
 import { ExpressTaskController } from './lib/Task/infrastructure/ExpressTaskController';
 import { registerExpressTaskRoutes } from './lib/Task/infrastructure/ExpressTaskRoutes';
 import { ExpressUserController } from './lib/User/infrastructure/ExpressUserController';
@@ -43,6 +45,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 const authController = new ExpressAuthController();
 const userController = new ExpressUserController();
 const taskController = new ExpressTaskController();
+const categoryController = new ExpressCategoryController();
 
 // Registrar rutas de autenticación
 registerExpressAuthRoutes(router, authController);
@@ -52,6 +55,9 @@ registerExpressUserRoutes(router, userController);
 
 // Registrar rutas de tareas
 registerExpressTaskRoutes(router, taskController);
+
+// Registrar rutas de categorías
+registerExpressCategoryRoutes(router, categoryController);
 
 // Registrar el router principal
 app.use('/api', router);
