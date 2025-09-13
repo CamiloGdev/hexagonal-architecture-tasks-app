@@ -13,7 +13,7 @@ export class User {
   createdAt?: UserCreatedAt;
   updatedAt?: UserUpdatedAt;
 
-  constructor(
+  private constructor(
     name: UserName,
     email: UserEmail,
     password?: UserPasswordHash,
@@ -29,12 +29,39 @@ export class User {
     if (updatedAt) this.updatedAt = updatedAt;
   }
 
-  public static create(
+  /**
+   * Factory for creating a new user without password.
+   * Used in the context of User management.
+   */
+  public static create(name: UserName, email: UserEmail): User {
+    return new User(name, email);
+  }
+
+  /**
+   * Factory for registering a new user with password.
+   * Used in the Authentication context.
+   */
+  public static register(
     name: UserName,
     email: UserEmail,
     password: UserPasswordHash,
   ): User {
     return new User(name, email, password);
+  }
+
+  /**
+   * Factory for reconstructing a user from persistence.
+   * Used by repositories when hydrating domain objects.
+   */
+  public static fromPrimitives(
+    name: UserName,
+    email: UserEmail,
+    id?: UserId,
+    password?: UserPasswordHash,
+    createdAt?: UserCreatedAt,
+    updatedAt?: UserUpdatedAt,
+  ): User {
+    return new User(name, email, password, id, createdAt, updatedAt);
   }
 
   public nameAndEmail() {

@@ -72,7 +72,7 @@ export class Task {
       categoryId,
     );
   }
-  
+
   /**
    * Factory for reconstructing a task from persistence.
    * Used by repositories when hydrating domain objects.
@@ -101,7 +101,7 @@ export class Task {
       categoryId,
       id,
       createdAt,
-      updatedAt
+      updatedAt,
     );
   }
 

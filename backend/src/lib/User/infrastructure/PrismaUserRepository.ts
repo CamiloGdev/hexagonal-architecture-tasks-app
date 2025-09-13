@@ -95,11 +95,11 @@ export class PrismaUserRepository implements UserRepository {
   }
 
   private mapToDomain(user: PrismaUser): User {
-    return new User(
+    return User.fromPrimitives(
       new UserName(user.name),
       new UserEmail(user.email),
-      undefined,
       new UserId(user.id),
+      undefined,
       new UserCreatedAt(user.created_at),
       new UserUpdatedAt(user.updated_at),
     );
@@ -111,11 +111,11 @@ export class PrismaUserRepository implements UserRepository {
       return null;
     }
 
-    return new User(
+    return User.fromPrimitives(
       new UserName(user.name),
       new UserEmail(user.email),
-      new UserPasswordHash(user.password_hash),
       new UserId(user.id),
+      new UserPasswordHash(user.password_hash),
       new UserCreatedAt(user.created_at),
       new UserUpdatedAt(user.updated_at),
     );

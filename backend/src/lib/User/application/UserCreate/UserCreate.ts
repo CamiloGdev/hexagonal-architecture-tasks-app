@@ -18,8 +18,8 @@ export class UserCreate {
       );
     }
 
-    // Usamos el constructor directamente o el método estático
-    const newUser = new User(new UserName(name), userEmail);
+    // Usamos el método factory create
+    const newUser = User.create(new UserName(name), userEmail);
 
     return this.repository.create(newUser);
   }

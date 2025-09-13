@@ -30,8 +30,8 @@ export class AuthRegister {
     // 2. Hashear la contraseña (la validación ya se realizó en el middleware)
     const hashedPassword = await this.passwordHasher.hash(passwordPlainText);
 
-    // 3. Crear la entidad de dominio con el HASH
-    const user = new User(
+    // 3. Crear la entidad de dominio con el HASH usando el factory method
+    const user = User.register(
       new UserName(name),
       userEmail,
       new UserPasswordHash(hashedPassword),

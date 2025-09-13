@@ -18,7 +18,8 @@ export class ExpressAuthController {
       secure: isProduction, // Solo enviar por HTTPS en producción
       sameSite: 'strict' as const, // 'strict' para mayor seguridad contra CSRF
       maxAge: isRefreshToken
-        ? Number(process.env.COOKIE_REFRESH_EXPIRATION) || 7 * 24 * 60 * 60 * 1000 // 7 días
+        ? Number(process.env.COOKIE_REFRESH_EXPIRATION) ||
+          7 * 24 * 60 * 60 * 1000 // 7 días
         : Number(process.env.COOKIE_ACCESS_EXPIRATION) || 15 * 60 * 1000, // 15 minutos
       path: isRefreshToken ? '/api/auth/refresh' : '/api', // Ruta específica según el tipo de token
     };
