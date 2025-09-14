@@ -2,6 +2,19 @@ import type { Task } from './Task';
 import type { TaskId } from './TaskId';
 import type { TaskUserId } from './TaskUserId';
 
+// Tipo para representar la información de un tag en las respuestas
+export interface TagInfo {
+  id: string;
+  name: string;
+  color?: string;
+}
+
+// Tipo para representar una tarea con sus tags asociados
+export interface TaskWithTags {
+  task: Task;
+  tags: TagInfo[];
+}
+
 export interface TaskFilters {
   completed?: boolean | undefined;
   categoryId?: string | undefined;
@@ -15,11 +28,11 @@ export interface TaskFilters {
 }
 
 export interface TaskRepository {
-  create(task: Task): Promise<Task>;
-  getAll(userId: TaskUserId, filters?: TaskFilters): Promise<Task[]>;
-  getOneById(id: TaskId, userId: TaskUserId): Promise<Task | null>;
-  update(task: Task): Promise<Task>;
+  create(task: Task): Promise<TaskWithTags>;
+  getAll(userId: TaskUserId, filters?: TaskFilters): Promise<TaskWithTags[]>;
+  getOneById(id: TaskId, userId: TaskUserId): Promise<TaskWithTags | null>;
+  update(task: Task): Promise<TaskWithTags>;
   delete(id: TaskId, userId: TaskUserId): Promise<void>;
-  markAsCompleted(id: TaskId, userId: TaskUserId): Promise<Task>;
-  markAsIncomplete(id: TaskId, userId: TaskUserId): Promise<Task>;
+  markAsCompleted(id: TaskId, userId: TaskUserId): Promise<TaskWithTags>;
+  markAsIncomplete(id: TaskId, userId: TaskUserId): Promise<TaskWithTags>;
 }

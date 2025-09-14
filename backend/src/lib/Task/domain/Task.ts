@@ -7,6 +7,7 @@ import type { TaskDescription } from './TaskDescription';
 import type { TaskDueDate } from './TaskDueDate';
 import type { TaskId } from './TaskId';
 import { TaskPriority } from './TaskPriority';
+import type { TaskTagIds } from './TaskTagIds';
 import type { TaskTitle } from './TaskTitle';
 import type { TaskUpdatedAt } from './TaskUpdatedAt';
 import type { TaskUserId } from './TaskUserId';
@@ -21,6 +22,7 @@ export class Task {
   completedAt?: TaskCompletedAt;
   userId: TaskUserId;
   categoryId?: TaskCategoryId;
+  tagIds?: TaskTagIds;
   createdAt?: TaskCreatedAt;
   updatedAt?: TaskUpdatedAt;
 
@@ -33,6 +35,7 @@ export class Task {
     dueDate?: TaskDueDate,
     completedAt?: TaskCompletedAt,
     categoryId?: TaskCategoryId,
+    tagIds?: TaskTagIds,
     id?: TaskId,
     createdAt?: TaskCreatedAt,
     updatedAt?: TaskUpdatedAt,
@@ -45,6 +48,7 @@ export class Task {
     if (dueDate) this.dueDate = dueDate;
     if (completedAt) this.completedAt = completedAt;
     if (categoryId) this.categoryId = categoryId;
+    if (tagIds) this.tagIds = tagIds;
     if (id) this.id = id;
     if (createdAt) this.createdAt = createdAt;
     if (updatedAt) this.updatedAt = updatedAt;
@@ -61,6 +65,7 @@ export class Task {
     priority?: TaskPriority,
     dueDate?: TaskDueDate,
     categoryId?: TaskCategoryId,
+    tagIds?: TaskTagIds,
   ): Task {
     return new Task(
       title,
@@ -71,6 +76,7 @@ export class Task {
       dueDate,
       undefined,
       categoryId,
+      tagIds,
     );
   }
 
@@ -88,6 +94,7 @@ export class Task {
     dueDate?: TaskDueDate,
     completedAt?: TaskCompletedAt,
     categoryId?: TaskCategoryId,
+    tagIds?: TaskTagIds,
     createdAt?: TaskCreatedAt,
     updatedAt?: TaskUpdatedAt,
   ): Task {
@@ -100,6 +107,7 @@ export class Task {
       dueDate,
       completedAt,
       categoryId,
+      tagIds,
       id,
       createdAt,
       updatedAt,

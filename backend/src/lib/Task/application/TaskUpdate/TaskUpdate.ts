@@ -1,5 +1,4 @@
 import type { Priority } from '../../domain/Priority.enum';
-import type { Task } from '../../domain/Task';
 import { TaskCategoryId } from '../../domain/TaskCategoryId';
 import { TaskCompleted } from '../../domain/TaskCompleted';
 import { TaskDescription } from '../../domain/TaskDescription';
@@ -7,7 +6,8 @@ import { TaskDueDate } from '../../domain/TaskDueDate';
 import { TaskId } from '../../domain/TaskId';
 import { TaskNotFoundError } from '../../domain/TaskNotFoundError';
 import { TaskPriority } from '../../domain/TaskPriority';
-import type { TaskRepository } from '../../domain/TaskRepository';
+import type { TaskRepository, TaskWithTags } from '../../domain/TaskRepository';
+import { TaskTagIds } from '../../domain/TaskTagIds';
 import { TaskTitle } from '../../domain/TaskTitle';
 import { TaskUserId } from '../../domain/TaskUserId';
 
@@ -20,20 +20,23 @@ export interface TaskUpdateRequest {
   dueDate?: Date;
   categoryId?: string;
   completed?: boolean;
+  tagIds?: string[];
 }
 
 export class TaskUpdate {
   constructor(private taskRepository: TaskRepository) {}
 
-  async execute(request: TaskUpdateRequest): Promise<Task> {
+  async execute(request: TaskUpdateRequest): Promise<TaskWithTags> {
     const taskId = new TaskId(request.id);
     const userId = new TaskUserId(request.userId);
 
-    const existingTask = await this.taskRepository.getOneById(taskId, userId);
+    const taskWithTags = await this.taskRepository.getOneById(taskId, userId);
 
-    if (!existingTask) {
+    if (!taskWithTags) {
       throw new TaskNotFoundError();
     }
+
+    const existingTask = taskWithTags.task;
 
     // Update only provided fields
     if (request.title !== undefined) {
@@ -63,6 +66,10 @@ export class TaskUpdate {
       } else {
         existingTask.markAsIncomplete();
       }
+    }
+
+    if (request.tagIds !== undefined) {
+      existingTask.tagIds = new TaskTagIds(request.tagIds);
     }
 
     return await this.taskRepository.update(existingTask);

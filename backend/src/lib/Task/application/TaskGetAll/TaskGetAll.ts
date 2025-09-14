@@ -1,5 +1,8 @@
-import type { Task } from '../../domain/Task';
-import type { TaskFilters, TaskRepository } from '../../domain/TaskRepository';
+import type {
+  TaskFilters,
+  TaskRepository,
+  TaskWithTags,
+} from '../../domain/TaskRepository';
 import { TaskUserId } from '../../domain/TaskUserId';
 
 export interface TaskGetAllRequest {
@@ -10,7 +13,7 @@ export interface TaskGetAllRequest {
 export class TaskGetAll {
   constructor(private taskRepository: TaskRepository) {}
 
-  async execute(request: TaskGetAllRequest): Promise<Task[]> {
+  async execute(request: TaskGetAllRequest): Promise<TaskWithTags[]> {
     const userId = new TaskUserId(request.userId);
     return await this.taskRepository.getAll(userId, request.filters);
   }
