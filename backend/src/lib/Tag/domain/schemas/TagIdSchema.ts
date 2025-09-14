@@ -1,3 +1,3 @@
 import { z } from 'zod';
 
-export const TagIdSchema = z.string().uuid('Invalid tag ID format');
+export const TagIdSchema = z.uuid('Invalid tag ID format');

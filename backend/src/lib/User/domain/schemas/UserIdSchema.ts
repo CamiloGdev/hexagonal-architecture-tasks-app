@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export const UserIdSchema = z.string().min(5, {
-  message: 'UserId must be at least 5 characters long',
-});
+export const UserIdSchema = z
+  .uuid('UserId must be a valid UUID')
+  .nonempty('UserId cannot be empty');
 
 export type UserIdType = z.infer<typeof UserIdSchema>;

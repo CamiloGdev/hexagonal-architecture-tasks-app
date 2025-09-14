@@ -3,7 +3,7 @@ import { z } from 'zod';
 // Schema for tag ID parameter validation
 export const tagIdSchema = z.object({
   params: z.object({
-    id: z.string().uuid('Tag ID must be a valid UUID'),
+    id: z.uuid('Tag ID must be a valid UUID'),
   }),
 });
 
@@ -28,7 +28,7 @@ export const createTagSchema = z.object({
 // Schema for updating a tag
 export const updateTagSchema = z.object({
   params: z.object({
-    id: z.string().uuid('Tag ID must be a valid UUID'),
+    id: z.uuid('Tag ID must be a valid UUID'),
   }),
   body: z.object({
     name: z
@@ -50,15 +50,15 @@ export const updateTagSchema = z.object({
 // Schema for task ID parameter validation
 export const taskIdSchema = z.object({
   params: z.object({
-    taskId: z.string().uuid('Task ID must be a valid UUID'),
+    taskId: z.uuid('Task ID must be a valid UUID'),
   }),
 });
 
 // Schema for tag-task assignment
 export const assignTagToTaskSchema = z.object({
   params: z.object({
-    id: z.string().uuid('Tag ID must be a valid UUID'),
-    taskId: z.string().uuid('Task ID must be a valid UUID'),
+    id: z.uuid('Tag ID must be a valid UUID'),
+    taskId: z.uuid('Task ID must be a valid UUID'),
   }),
 });
 

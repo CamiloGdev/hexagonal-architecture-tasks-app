@@ -3,7 +3,7 @@ import { z } from 'zod';
 // Schema for category ID parameter validation
 export const categoryIdSchema = z.object({
   params: z.object({
-    id: z.string().uuid('Category ID must be a valid UUID'),
+    id: z.uuid('Category ID must be a valid UUID'),
   }),
 });
 
@@ -28,7 +28,7 @@ export const createCategorySchema = z.object({
 // Schema for updating a category
 export const updateCategorySchema = z.object({
   params: z.object({
-    id: z.string().uuid('Category ID must be a valid UUID'),
+    id: z.uuid('Category ID must be a valid UUID'),
   }),
   body: z.object({
     name: z
