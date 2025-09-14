@@ -1,4 +1,4 @@
 import { z } from 'zod';
-import { Priority } from '../TaskPriority';
+import { Priority } from '../Priority.enum';
 
 export const TaskPrioritySchema = z.enum(Priority);

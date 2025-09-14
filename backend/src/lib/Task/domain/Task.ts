@@ -1,3 +1,4 @@
+import { Priority } from './Priority.enum';
 import type { TaskCategoryId } from './TaskCategoryId';
 import { TaskCompleted } from './TaskCompleted';
 import { TaskCompletedAt } from './TaskCompletedAt';
@@ -5,7 +6,7 @@ import type { TaskCreatedAt } from './TaskCreatedAt';
 import type { TaskDescription } from './TaskDescription';
 import type { TaskDueDate } from './TaskDueDate';
 import type { TaskId } from './TaskId';
-import { Priority, TaskPriority } from './TaskPriority';
+import { TaskPriority } from './TaskPriority';
 import type { TaskTitle } from './TaskTitle';
 import type { TaskUpdatedAt } from './TaskUpdatedAt';
 import type { TaskUserId } from './TaskUserId';

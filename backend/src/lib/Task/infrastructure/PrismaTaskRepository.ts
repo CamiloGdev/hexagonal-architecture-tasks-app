@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../../generated/prisma';
+import { type Priority, PrismaClient } from '../../../generated/prisma';
 import { Task } from '../domain/Task';
 import { TaskCategoryId } from '../domain/TaskCategoryId';
 import { TaskCompleted } from '../domain/TaskCompleted';
@@ -8,7 +8,7 @@ import { TaskDescription } from '../domain/TaskDescription';
 import { TaskDueDate } from '../domain/TaskDueDate';
 import { TaskId } from '../domain/TaskId';
 import { TaskNotFoundError } from '../domain/TaskNotFoundError';
-import { type Priority, TaskPriority } from '../domain/TaskPriority';
+import { TaskPriority } from '../domain/TaskPriority';
 import type { TaskFilters, TaskRepository } from '../domain/TaskRepository';
 import { TaskTitle } from '../domain/TaskTitle';
 import { TaskUpdatedAt } from '../domain/TaskUpdatedAt';

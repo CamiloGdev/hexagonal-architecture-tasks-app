@@ -1,8 +1,9 @@
+import type { Priority } from '../../domain/Priority.enum';
 import { Task } from '../../domain/Task';
 import { TaskCategoryId } from '../../domain/TaskCategoryId';
 import { TaskDescription } from '../../domain/TaskDescription';
 import { TaskDueDate } from '../../domain/TaskDueDate';
-import { type Priority, TaskPriority } from '../../domain/TaskPriority';
+import { TaskPriority } from '../../domain/TaskPriority';
 import type { TaskRepository } from '../../domain/TaskRepository';
 import { TaskTitle } from '../../domain/TaskTitle';
 import { TaskUserId } from '../../domain/TaskUserId';

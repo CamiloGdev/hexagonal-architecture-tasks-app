@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Priority } from '../domain/TaskPriority';
+import { Priority } from '../domain/Priority.enum';
 
 /**
  * Schema for creating a new task

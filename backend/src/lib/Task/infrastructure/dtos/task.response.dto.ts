@@ -1,4 +1,4 @@
-import type { Priority } from '../../domain/TaskPriority';
+import type { Priority } from '../../domain/Priority.enum';
 
 export type TaskResponseDto = {
   title: string;

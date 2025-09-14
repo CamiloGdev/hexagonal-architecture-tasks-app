@@ -1,10 +1,5 @@
+import type { Priority } from './Priority.enum';
 import { TaskPrioritySchema } from './schemas/TaskPrioritySchema';
-
-export enum Priority {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-}
 
 export class TaskPriority {
   readonly value: Priority;
