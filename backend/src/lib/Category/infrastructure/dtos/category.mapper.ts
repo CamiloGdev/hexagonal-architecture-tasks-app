@@ -6,11 +6,13 @@ export const CategoryMapper = {
     if (!category.id) {
       throw new Error('Cannot map Category without an ID');
     }
-    
+
     if (!category.createdAt || !category.updatedAt) {
-      throw new Error('Cannot map Category without createdAt or updatedAt timestamps');
+      throw new Error(
+        'Cannot map Category without createdAt or updatedAt timestamps',
+      );
     }
-    
+
     return {
       id: category.id.value,
       name: category.name.value,

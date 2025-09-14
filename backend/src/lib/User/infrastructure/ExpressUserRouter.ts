@@ -10,6 +10,8 @@ export function registerExpressUserRoutes(
 ): void {
   const userRouter = Router();
 
+  userRouter.use(authMiddleware);
+
   /* userRouter.get(
     '/',
     validate(userIdSchema),
@@ -27,13 +29,11 @@ export function registerExpressUserRoutes(
   ); */
   userRouter.put(
     '/:id',
-    authMiddleware, // Middleware de protección
     validate(putUserSchema),
     userController.edit.bind(userController),
   );
   userRouter.patch(
     '/:id',
-    authMiddleware, // Middleware de protección
     validate(editUserSchema),
     userController.edit.bind(userController),
   );
