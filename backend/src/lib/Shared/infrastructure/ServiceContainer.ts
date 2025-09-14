@@ -9,6 +9,16 @@ import { CategoryGetOneById } from '../../Category/application/CategoryGetOneByI
 import { CategoryUpdate } from '../../Category/application/CategoryUpdate/CategoryUpdate';
 import type { CategoryRepository } from '../../Category/domain/CategoryRepository';
 import { PrismaCategoryRepository } from '../../Category/infrastructure/PrismaCategoryRepository';
+import { TagAssignToTask } from '../../Tag/application/TagAssignToTask/TagAssignToTask';
+import { TagCreate } from '../../Tag/application/TagCreate/TagCreate';
+import { TagDelete } from '../../Tag/application/TagDelete/TagDelete';
+import { TagGetAll } from '../../Tag/application/TagGetAll/TagGetAll';
+import { TagGetByTaskId } from '../../Tag/application/TagGetByTaskId/TagGetByTaskId';
+import { TagGetOneById } from '../../Tag/application/TagGetOneById/TagGetOneById';
+import { TagUnassignFromTask } from '../../Tag/application/TagUnassignFromTask/TagUnassignFromTask';
+import { TagUpdate } from '../../Tag/application/TagUpdate/TagUpdate';
+import type { TagRepository } from '../../Tag/domain/TagRepository';
+import { PrismaTagRepository } from '../../Tag/infrastructure/PrismaTagRepository';
 import { TaskCreate } from '../../Task/application/TaskCreate/TaskCreate';
 import { TaskDelete } from '../../Task/application/TaskDelete/TaskDelete';
 import { TaskGetAll } from '../../Task/application/TaskGetAll/TaskGetAll';
@@ -51,9 +61,15 @@ function createCategoryRepository(): CategoryRepository {
   return new PrismaCategoryRepository();
 }
 
+// Factory function to create the tag repository
+function createTagRepository(): TagRepository {
+  return new PrismaTagRepository();
+}
+
 const userRepository = createUserRepository();
 const taskRepository = createTaskRepository();
 const categoryRepository = createCategoryRepository();
+const tagRepository = createTagRepository();
 const passwordHasher = new BcryptPasswordHasher();
 const tokenService = new JsonWebTokenService();
 
@@ -84,5 +100,15 @@ export const ServiceContainer = {
     getOneById: new CategoryGetOneById(categoryRepository),
     update: new CategoryUpdate(categoryRepository),
     delete: new CategoryDelete(categoryRepository),
+  },
+  tag: {
+    create: new TagCreate(tagRepository),
+    getAll: new TagGetAll(tagRepository),
+    getOneById: new TagGetOneById(tagRepository),
+    update: new TagUpdate(tagRepository),
+    delete: new TagDelete(tagRepository),
+    getByTaskId: new TagGetByTaskId(tagRepository),
+    assignToTask: new TagAssignToTask(tagRepository),
+    unassignFromTask: new TagUnassignFromTask(tagRepository),
   },
 };
