@@ -1,8 +1,23 @@
 import type { Task } from '../../domain/Task';
-import type { TaskResponseDto } from './task.response.dto';
+import type { TaskWithTags } from '../../domain/TaskRepository';
+import type { TagDto, TaskResponseDto } from './task.response.dto';
 
 export const TaskMapper = {
-  toResponseDto(task: Task): TaskResponseDto {
+  toResponseDto(
+    taskWithTags: TaskWithTags | Task,
+    tags?: TagDto[],
+  ): TaskResponseDto {
+    // Si recibimos un TaskWithTags, extraemos la tarea y los tags
+    let task: Task;
+    let taskTags: TagDto[] | undefined = tags;
+
+    if ('task' in taskWithTags && 'tags' in taskWithTags) {
+      task = taskWithTags.task;
+      // Convertimos TagInfo a TagDto (son estructuralmente idénticos)
+      taskTags = taskWithTags.tags as TagDto[];
+    } else {
+      task = taskWithTags;
+    }
     const dto: TaskResponseDto = {
       title: task.title.value,
       completed: task.completed.value,
@@ -38,10 +53,17 @@ export const TaskMapper = {
       dto.updatedAt = task.updatedAt.value;
     }
 
+    // Map tags if they are provided
+    if (taskTags && taskTags.length > 0) {
+      dto.tags = taskTags;
+    }
+
     return dto;
   },
 
-  toResponseDtoList(tasks: Task[]): TaskResponseDto[] {
-    return tasks.map(TaskMapper.toResponseDto);
+  toResponseDtoList(tasksWithTags: TaskWithTags[]): TaskResponseDto[] {
+    return tasksWithTags.map((taskWithTags) => {
+      return TaskMapper.toResponseDto(taskWithTags);
+    });
   },
 } as const;

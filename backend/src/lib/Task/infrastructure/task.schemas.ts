@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { Priority } from '../domain/Priority.enum';
+import { TaskTagIdsSchema } from '../domain/schemas/TaskTagIdsSchema';
 
 /**
  * Schema for creating a new task
@@ -22,6 +23,7 @@ export const createTaskSchema = z.object({
       .optional()
       .transform((val) => (val ? new Date(val) : undefined)),
     categoryId: z.uuid().optional(),
+    tagIds: TaskTagIdsSchema,
   }),
 });
 
@@ -47,6 +49,7 @@ export const putTaskSchema = z.object({
       .optional()
       .transform((val) => (val ? new Date(val) : undefined)),
     categoryId: z.uuid().optional(),
+    tagIds: TaskTagIdsSchema,
   }),
   params: z.object({
     id: z.uuid({ message: 'Invalid task ID format' }),
@@ -76,6 +79,7 @@ export const patchTaskSchema = z.object({
       .optional()
       .transform((val) => (val ? new Date(val) : undefined)),
     categoryId: z.uuid().optional(),
+    tagIds: TaskTagIdsSchema,
   }),
   params: z.object({
     id: z.uuid({ message: 'Invalid task ID format' }),

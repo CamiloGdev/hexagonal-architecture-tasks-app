@@ -46,7 +46,8 @@ export class ExpressTaskController {
     try {
       const userId = req.user?.id as string;
 
-      const { title, description, priority, dueDate, categoryId } = req.body;
+      const { title, description, priority, dueDate, categoryId, tagIds } =
+        req.body;
 
       const createdTask = await ServiceContainer.task.create.execute({
         title,
@@ -55,6 +56,7 @@ export class ExpressTaskController {
         priority,
         dueDate,
         categoryId,
+        tagIds,
       });
 
       return res.status(201).json(TaskMapper.toResponseDto(createdTask));
@@ -67,8 +69,15 @@ export class ExpressTaskController {
     try {
       const userId = req.user?.id as string;
 
-      const { title, description, priority, completed, dueDate, categoryId } =
-        req.body;
+      const {
+        title,
+        description,
+        priority,
+        completed,
+        dueDate,
+        categoryId,
+        tagIds,
+      } = req.body;
       const taskId = req.params.id;
 
       const updatedTask = await ServiceContainer.task.update.execute({
@@ -80,6 +89,7 @@ export class ExpressTaskController {
         completed,
         dueDate,
         categoryId,
+        tagIds,
       });
 
       return res.status(200).json(TaskMapper.toResponseDto(updatedTask));
