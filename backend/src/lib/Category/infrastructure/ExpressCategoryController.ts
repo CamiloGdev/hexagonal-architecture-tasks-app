@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ServiceContainer } from '../../Shared/infrastructure/ServiceContainer';
+import { CategoryHasTasksError } from '../domain/CategoryHasTasksError';
 import { CategoryNotFoundError } from '../domain/CategoryNotFoundError';
 import { CategoryMapper } from './dtos/category.mapper';
 
@@ -95,6 +96,9 @@ export class ExpressCategoryController {
     } catch (error) {
       if (error instanceof CategoryNotFoundError) {
         return res.status(404).json({ message: error.message });
+      }
+      if (error instanceof CategoryHasTasksError) {
+        return res.status(400).json({ message: error.message });
       }
       next(error);
     }

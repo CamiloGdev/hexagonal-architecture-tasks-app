@@ -8,4 +8,5 @@ export interface CategoryRepository {
   getOneById(id: CategoryId, userId: CategoryUserId): Promise<Category | null>;
   update(category: Category): Promise<Category>;
   delete(id: CategoryId, userId: CategoryUserId): Promise<void>;
+  hasTasks(id: CategoryId, userId: CategoryUserId): Promise<boolean>;
 }

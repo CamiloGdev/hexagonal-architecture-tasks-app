@@ -1,3 +1,4 @@
+import { CategoryHasTasksError } from '../../domain/CategoryHasTasksError';
 import { CategoryId } from '../../domain/CategoryId';
 import { CategoryNotFoundError } from '../../domain/CategoryNotFoundError';
 import type { CategoryRepository } from '../../domain/CategoryRepository';
@@ -12,18 +13,24 @@ export class CategoryDelete {
   constructor(private categoryRepository: CategoryRepository) {}
 
   async execute(request: CategoryDeleteRequest): Promise<void> {
+    const categoryId = new CategoryId(request.id);
+    const userId = new CategoryUserId(request.userId);
+
     const existingCategory = await this.categoryRepository.getOneById(
-      new CategoryId(request.id),
-      new CategoryUserId(request.userId),
+      categoryId,
+      userId,
     );
 
     if (!existingCategory) {
       throw new CategoryNotFoundError();
     }
 
-    await this.categoryRepository.delete(
-      new CategoryId(request.id),
-      new CategoryUserId(request.userId),
-    );
+    // Check if category has tasks assigned
+    const hasTasks = await this.categoryRepository.hasTasks(categoryId, userId);
+    if (hasTasks) {
+      throw new CategoryHasTasksError();
+    }
+
+    await this.categoryRepository.delete(categoryId, userId);
   }
 }

@@ -119,6 +119,17 @@ export class PrismaCategoryRepository implements CategoryRepository {
     }
   }
 
+  async hasTasks(id: CategoryId, userId: CategoryUserId): Promise<boolean> {
+    const taskCount = await this.prisma.task.count({
+      where: {
+        category_id: id.value,
+        user_id: userId.value,
+      },
+    });
+
+    return taskCount > 0;
+  }
+
   private mapToDomain(category: PrismaCategory): Category {
     return Category.fromPrimitives(
       new CategoryName(category.name),
