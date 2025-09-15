@@ -22,7 +22,10 @@ export const createTaskSchema = z.object({
       .datetime()
       .optional()
       .transform((val) => (val ? new Date(val) : undefined)),
-    categoryId: z.uuid().optional(),
+    // categoryId: z.uuid().optional(),
+    categoryId: z.uuid({
+      message: 'Category ID is required and must be a valid UUID',
+    }),
     tagIds: TaskTagIdsSchema,
   }),
 });

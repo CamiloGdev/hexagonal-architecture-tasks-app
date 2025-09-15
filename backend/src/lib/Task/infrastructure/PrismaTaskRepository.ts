@@ -34,7 +34,7 @@ type PrismaTask = {
   due_date: Date | null;
   completed_at: Date | null;
   user_id: string;
-  category_id: string | null;
+  category_id: string;
   created_at: Date;
   updated_at: Date;
   taskTags?: {
@@ -65,7 +65,7 @@ export class PrismaTaskRepository implements TaskRepository {
           due_date: taskData.dueDate?.value || null,
           completed_at: taskData.completedAt?.value || null,
           user_id: taskData.userId.value,
-          category_id: taskData.categoryId?.value || null,
+          category_id: taskData.categoryId.value,
         },
       });
 
@@ -231,7 +231,7 @@ export class PrismaTaskRepository implements TaskRepository {
             priority: taskData.priority.value,
             due_date: taskData.dueDate?.value || null,
             completed_at: taskData.completedAt?.value || null,
-            category_id: taskData.categoryId?.value || null,
+            category_id: taskData.categoryId.value,
           },
         });
 
@@ -411,13 +411,13 @@ export class PrismaTaskRepository implements TaskRepository {
     return Task.fromPrimitives(
       new TaskTitle(task.title),
       new TaskUserId(task.user_id),
+      new TaskCategoryId(task.category_id),
       new TaskCompleted(task.completed),
       new TaskPriority(task.priority as Priority),
       new TaskId(task.id),
       task.description ? new TaskDescription(task.description) : undefined,
       task.due_date ? new TaskDueDate(task.due_date) : undefined,
       task.completed_at ? new TaskCompletedAt(task.completed_at) : undefined,
-      task.category_id ? new TaskCategoryId(task.category_id) : undefined,
       tagIds.length > 0 ? new TaskTagIds(tagIds) : undefined,
       new TaskCreatedAt(task.created_at),
       new TaskUpdatedAt(task.updated_at),

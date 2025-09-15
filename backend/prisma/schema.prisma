@@ -66,13 +66,13 @@ model Task {
   due_date         DateTime?
   completed_at     DateTime?
   user_id          String
-  category_id      String?
+  category_id      String
   created_at       DateTime  @default(now())
   updated_at       DateTime  @updatedAt
 
   // Relations
-  user     User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  category Category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  user     User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [category_id], references: [id], onDelete: Restrict)
   taskTags TaskTag[]
 
   @@map("tasks")

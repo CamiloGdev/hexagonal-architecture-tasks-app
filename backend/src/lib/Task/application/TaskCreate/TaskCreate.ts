@@ -12,10 +12,10 @@ import { TaskUserId } from '../../domain/TaskUserId';
 export interface TaskCreateRequest {
   title: string;
   userId: string;
+  categoryId: string;
   description?: string;
   priority?: Priority;
   dueDate?: Date;
-  categoryId?: string;
   tagIds?: string[];
 }
 
@@ -26,12 +26,12 @@ export class TaskCreate {
     const task = Task.create(
       new TaskTitle(request.title),
       new TaskUserId(request.userId),
+      new TaskCategoryId(request.categoryId),
       request.description
         ? new TaskDescription(request.description)
         : undefined,
       request.priority ? new TaskPriority(request.priority) : undefined,
       request.dueDate ? new TaskDueDate(request.dueDate) : undefined,
-      request.categoryId ? new TaskCategoryId(request.categoryId) : undefined,
       request.tagIds ? new TaskTagIds(request.tagIds) : undefined,
     );
 

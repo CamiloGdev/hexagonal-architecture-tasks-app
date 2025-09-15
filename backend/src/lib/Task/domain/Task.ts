@@ -21,7 +21,7 @@ export class Task {
   dueDate?: TaskDueDate;
   completedAt?: TaskCompletedAt;
   userId: TaskUserId;
-  categoryId?: TaskCategoryId;
+  categoryId: TaskCategoryId;
   tagIds?: TaskTagIds;
   createdAt?: TaskCreatedAt;
   updatedAt?: TaskUpdatedAt;
@@ -29,12 +29,12 @@ export class Task {
   private constructor(
     title: TaskTitle,
     userId: TaskUserId,
+    categoryId: TaskCategoryId,
     completed: TaskCompleted,
     priority?: TaskPriority,
     description?: TaskDescription,
     dueDate?: TaskDueDate,
     completedAt?: TaskCompletedAt,
-    categoryId?: TaskCategoryId,
     tagIds?: TaskTagIds,
     id?: TaskId,
     createdAt?: TaskCreatedAt,
@@ -42,12 +42,12 @@ export class Task {
   ) {
     this.title = title;
     this.userId = userId;
+    this.categoryId = categoryId;
     this.completed = completed;
     this.priority = priority || new TaskPriority(Priority.MEDIUM);
     if (description) this.description = description;
     if (dueDate) this.dueDate = dueDate;
     if (completedAt) this.completedAt = completedAt;
-    if (categoryId) this.categoryId = categoryId;
     if (tagIds) this.tagIds = tagIds;
     if (id) this.id = id;
     if (createdAt) this.createdAt = createdAt;
@@ -61,21 +61,21 @@ export class Task {
   public static create(
     title: TaskTitle,
     userId: TaskUserId,
+    categoryId: TaskCategoryId,
     description?: TaskDescription,
     priority?: TaskPriority,
     dueDate?: TaskDueDate,
-    categoryId?: TaskCategoryId,
     tagIds?: TaskTagIds,
   ): Task {
     return new Task(
       title,
       userId,
+      categoryId,
       new TaskCompleted(false),
       priority,
       description,
       dueDate,
       undefined,
-      categoryId,
       tagIds,
     );
   }
@@ -87,13 +87,13 @@ export class Task {
   public static fromPrimitives(
     title: TaskTitle,
     userId: TaskUserId,
+    categoryId: TaskCategoryId,
     completed: TaskCompleted,
     priority: TaskPriority,
     id?: TaskId,
     description?: TaskDescription,
     dueDate?: TaskDueDate,
     completedAt?: TaskCompletedAt,
-    categoryId?: TaskCategoryId,
     tagIds?: TaskTagIds,
     createdAt?: TaskCreatedAt,
     updatedAt?: TaskUpdatedAt,
@@ -101,12 +101,12 @@ export class Task {
     return new Task(
       title,
       userId,
+      categoryId,
       completed,
       priority,
       description,
       dueDate,
       completedAt,
-      categoryId,
       tagIds,
       id,
       createdAt,
