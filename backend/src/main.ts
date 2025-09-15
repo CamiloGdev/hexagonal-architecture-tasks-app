@@ -1,4 +1,5 @@
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express, {
   type Express,
   type NextFunction,
@@ -20,6 +21,9 @@ import { registerExpressUserRoutes } from './lib/User/infrastructure/ExpressUser
 // Cargar variables de entorno
 process.loadEnvFile();
 
+// Puerto de la aplicación
+const PORT = process.env.PORT || 3000;
+
 // Crear la aplicación Express
 const app: Express = express();
 const router = Router();
@@ -29,18 +33,37 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Configurar CORS
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-  );
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    return res.status(200).json({});
+// Lista de orígenes permitidos
+// Lista INICIAL solo para desarrollo
+const allowedOrigins: string[] = [];
+
+// AÑADIMOS orígenes según el entorno
+if (process.env.NODE_ENV === 'production') {
+  const frontendUrl = process.env.FRONTEND_URL; // ej: 'https://mi-app-task.com'
+  if (frontendUrl) {
+    allowedOrigins.push(frontendUrl);
   }
-  next();
-});
+} else {
+  // Solo en desarrollo, permitimos localhost
+  allowedOrigins.push('http://localhost:3001'); // Frontend en puerto 3001 (swagger)
+  allowedOrigins.push('http://localhost:3000'); // Frontend en puerto 3000 (react)
+  // Agrega aquí otros puertos que uses para desarrollo
+}
+
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    // Permite peticiones sin 'origin' (como apps móviles, Postman, o curl)
+    // o si el origen está en nuestra lista de allowedOrigins
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // Configurar los módulos
 // Inicializar controladores
@@ -87,9 +110,6 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err);
   return res.status(500).json({ message: 'Something went wrong' });
 });
-
-// Puerto de la aplicación
-const PORT = process.env.PORT || 3000;
 
 // Iniciar el servidor
 app.listen(PORT, () => {

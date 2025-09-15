@@ -9,19 +9,25 @@ import {
   RefreshTokenNotFoundError,
 } from '../domain/AuthenticationError';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export class ExpressAuthController {
   // Helper para obtener la configuración de cookies
   private getCookieConfig(isRefreshToken = false) {
-    const isProduction = process.env.NODE_ENV === 'production';
     return {
       httpOnly: true, // No accesible desde JavaScript del cliente
       secure: isProduction, // Solo enviar por HTTPS en producción
-      sameSite: 'strict' as const, // 'strict' para mayor seguridad contra CSRF
+      sameSite: isProduction ? ('none' as const) : ('lax' as const), // 'lax' en desarrollo, 'none' en producción
+      // sameSite: 'strict' as const, // 'strict' para mayor seguridad contra CSRF
       maxAge: isRefreshToken
         ? Number(process.env.COOKIE_REFRESH_EXPIRATION) ||
           7 * 24 * 60 * 60 * 1000 // 7 días
         : Number(process.env.COOKIE_ACCESS_EXPIRATION) || 15 * 60 * 1000, // 15 minutos
-      path: isRefreshToken ? '/api/auth/refresh' : '/api', // Ruta específica según el tipo de token
+      path: isProduction
+        ? isRefreshToken
+          ? '/api/auth/refresh'
+          : '/api'
+        : '/', // Ruta específica según el tipo de token, en desarrollo todas las rutas
     };
   }
 
@@ -140,8 +146,10 @@ export class ExpressAuthController {
       // TODO: Implementar la invalidación del token en una blacklist (Redis)
 
       // Limpiamos las cookies en el navegador del cliente
-      res.clearCookie('accessToken', { path: '/api' });
-      res.clearCookie('refreshToken', { path: '/api/auth/refresh' });
+      res.clearCookie('accessToken', { path: isProduction ? '/api' : '/' });
+      res.clearCookie('refreshToken', {
+        path: isProduction ? '/api/auth/refresh' : '/',
+      });
 
       return res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
