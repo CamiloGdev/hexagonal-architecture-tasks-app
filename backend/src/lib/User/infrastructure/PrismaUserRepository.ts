@@ -87,11 +87,23 @@ export class PrismaUserRepository implements UserRepository {
   }
 
   async delete(id: UserId): Promise<void> {
-    await this.prisma.user.delete({
-      where: {
-        id: id.value,
-      },
-    });
+    try {
+      await this.prisma.user.delete({
+        where: {
+          id: id.value,
+        },
+      });
+    } catch (error: unknown) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        error.code === 'P2025'
+      ) {
+        throw new UserNotFoundError();
+      }
+      throw error;
+    }
   }
 
   private mapToDomain(user: PrismaUser): User {

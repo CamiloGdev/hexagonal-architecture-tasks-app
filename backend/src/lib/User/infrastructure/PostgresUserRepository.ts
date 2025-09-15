@@ -1,3 +1,4 @@
+import type { PoolClient } from 'pg';
 import { Pool } from 'pg';
 import { User } from '../domain/User';
 import { UserCreatedAt } from '../domain/UserCreatedAt';
@@ -75,9 +76,13 @@ export class PostgresUserRepository implements UserRepository {
   }
 
   async edit(user: User): Promise<User> {
+    if (!user.id) {
+      throw new UserNotFoundError();
+    }
+
     const query = {
       text: 'UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *',
-      values: [user.name.value, user.email.value, user.id?.value],
+      values: [user.name.value, user.email.value, user.id.value],
     };
 
     const result = await this.client.query<PostgresUser>(query);
@@ -92,11 +97,15 @@ export class PostgresUserRepository implements UserRepository {
 
   async delete(id: UserId): Promise<void> {
     const query = {
-      text: 'DELETE FROM users WHERE id = $1',
+      text: 'DELETE FROM users WHERE id = $1 RETURNING id',
       values: [id.value],
     };
 
-    await this.client.query(query);
+    const result = await this.client.query(query);
+
+    if (result.rowCount === 0) {
+      throw new UserNotFoundError();
+    }
   }
 
   private mapToDomain(user: PostgresUser): User {
@@ -157,5 +166,28 @@ export class PostgresUserRepository implements UserRepository {
 
     const result = await this.client.query<{ exists: boolean }>(query);
     return result.rows[0]?.exists ?? false;
+  }
+
+  // Método para ejecutar operaciones dentro de una transacción
+  async executeInTransaction<T>(
+    callback: (client: PoolClient) => Promise<T>,
+  ): Promise<T> {
+    const client = await this.client.connect();
+    try {
+      await client.query('BEGIN');
+      const result = await callback(client);
+      await client.query('COMMIT');
+      return result;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  // Método para cerrar la conexión de PostgreSQL cuando sea necesario
+  async disconnect(): Promise<void> {
+    await this.client.end();
   }
 }
