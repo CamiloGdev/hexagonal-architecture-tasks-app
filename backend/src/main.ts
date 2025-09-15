@@ -7,6 +7,7 @@ import express, {
   type Response,
   Router,
 } from 'express';
+import { setupSwagger } from './config/swagger.config';
 import { ExpressAuthController } from './lib/Auth/infrastructure/ExpressAuthController';
 import { registerExpressAuthRoutes } from './lib/Auth/infrastructure/ExpressAuthRoutes';
 import { ExpressCategoryController } from './lib/Category/infrastructure/ExpressCategoryController';
@@ -90,6 +91,14 @@ registerExpressTagRoutes(router, tagController);
 
 // Registrar el router principal
 app.use('/api', router);
+
+// Configurar Swagger UI para documentación de la API solo en desarrollo
+if (process.env.NODE_ENV !== 'production') {
+  setupSwagger(app);
+  console.log(
+    `Swagger UI disponible en: http://localhost:${PORT || 3000}/api-docs`,
+  );
+}
 
 // Ruta de health check
 app.get('/health', (_req: Request, res: Response) => {

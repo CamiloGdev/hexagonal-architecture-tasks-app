@@ -11,6 +11,12 @@ import {
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Autenticación y gestión de sesiones de usuario
+ */
 export class ExpressAuthController {
   // Helper para obtener la configuración de cookies
   private getCookieConfig(isRefreshToken = false) {
@@ -45,6 +51,68 @@ export class ExpressAuthController {
     res.cookie('refreshToken', refreshToken, this.getCookieConfig(true));
   }
 
+  /**
+   * @swagger
+   * /auth/register:
+   *   post:
+   *     summary: Registrar un nuevo usuario
+   *     description: Crea una nueva cuenta de usuario con validación completa de datos y genera tokens de autenticación
+   *     tags: [Auth]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/RegisterRequest'
+   *     responses:
+   *       201:
+   *         description: Usuario registrado exitosamente
+   *         headers:
+   *           Set-Cookie:
+   *             description: Cookies de autenticación (accessToken y refreshToken)
+   *             schema:
+   *               type: string
+   *               example: accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/AuthSuccessResponse'
+   *             example:
+   *               message: "User registered successfully"
+   *               user:
+   *                 id: "123e4567-e89b-12d3-a456-426614174000"
+   *                 name: "Juan Pérez"
+   *                 email: "juan.perez@example.com"
+   *                 createdAt: "2024-01-01T00:00:00.000Z"
+   *                 updatedAt: "2024-01-01T00:00:00.000Z"
+   *       400:
+   *         description: Datos de entrada inválidos
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ValidationErrorResponse'
+   *             example:
+   *               error: "Invalid request data"
+   *               details:
+   *                 - field: "body.name"
+   *                   message: "body.name must be at least 3 characters long"
+   *                 - field: "body.password"
+   *                   message: "body.password La contraseña debe contener al menos una letra mayúscula"
+   *       409:
+   *         description: El usuario ya existe
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ConflictErrorResponse'
+   *             example:
+   *               message: "User already exists"
+   *       500:
+   *         description: Error interno del servidor
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ServerErrorResponse'
+   */
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       // Los datos ya están validados por el middleware de Zod
@@ -76,6 +144,68 @@ export class ExpressAuthController {
     }
   }
 
+  /**
+   * @swagger
+   * /auth/login:
+   *   post:
+   *     summary: Iniciar sesión de usuario
+   *     description: Autentica un usuario existente con email y contraseña, genera tokens de autenticación
+   *     tags: [Auth]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/LoginRequest'
+   *     responses:
+   *       200:
+   *         description: Inicio de sesión exitoso
+   *         headers:
+   *           Set-Cookie:
+   *             description: Cookies de autenticación (accessToken y refreshToken)
+   *             schema:
+   *               type: string
+   *               example: accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/AuthSuccessResponse'
+   *             example:
+   *               message: "Login successful"
+   *               user:
+   *                 id: "123e4567-e89b-12d3-a456-426614174000"
+   *                 name: "Juan Pérez"
+   *                 email: "juan.perez@example.com"
+   *                 createdAt: "2024-01-01T00:00:00.000Z"
+   *                 updatedAt: "2024-01-01T00:00:00.000Z"
+   *       400:
+   *         description: Datos de entrada inválidos
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ValidationErrorResponse'
+   *             example:
+   *               error: "Invalid request data"
+   *               details:
+   *                 - field: "body.email"
+   *                   message: "body.email must be a valid email address"
+   *                 - field: "body.password"
+   *                   message: "body.password is required"
+   *       404:
+   *         description: Usuario no encontrado o credenciales incorrectas
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/NotFoundErrorResponse'
+   *             example:
+   *               message: "User not found"
+   *       500:
+   *         description: Error interno del servidor
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ServerErrorResponse'
+   */
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       // Los datos ya están validados por el middleware de Zod
@@ -106,6 +236,58 @@ export class ExpressAuthController {
     }
   }
 
+  /**
+   * @swagger
+   * /auth/refresh:
+   *   post:
+   *     summary: Refrescar token de acceso
+   *     description: Genera un nuevo token de acceso usando el refresh token almacenado en cookies
+   *     tags: [Auth]
+   *     parameters:
+   *       - in: cookie
+   *         name: refreshToken
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: Token de refresco almacenado en cookie HttpOnly
+   *     responses:
+   *       200:
+   *         description: Token de acceso renovado exitosamente
+   *         headers:
+   *           Set-Cookie:
+   *             description: Nueva cookie de accessToken
+   *             schema:
+   *               type: string
+   *               example: accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/RefreshSuccessResponse'
+   *             example:
+   *               message: "Access token refreshed"
+   *       401:
+   *         description: Token de refresco no encontrado
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/UnauthorizedErrorResponse'
+   *             example:
+   *               message: "Refresh token not found"
+   *       403:
+   *         description: Token de refresco inválido o expirado
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ForbiddenErrorResponse'
+   *             example:
+   *               message: "Invalid refresh token"
+   *       500:
+   *         description: Error interno del servidor
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ServerErrorResponse'
+   */
   // Método para refrescar el token
   async refresh(req: Request, res: Response, next: NextFunction) {
     try {
@@ -140,6 +322,35 @@ export class ExpressAuthController {
     }
   }
 
+  /**
+   * @swagger
+   * /auth/logout:
+   *   post:
+   *     summary: Cerrar sesión de usuario
+   *     description: Cierra la sesión del usuario eliminando las cookies de autenticación del navegador
+   *     tags: [Auth]
+   *     responses:
+   *       200:
+   *         description: Sesión cerrada exitosamente
+   *         headers:
+   *           Set-Cookie:
+   *             description: Cookies de autenticación eliminadas
+   *             schema:
+   *               type: string
+   *               example: accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/LogoutSuccessResponse'
+   *             example:
+   *               message: "Logout successful"
+   *       500:
+   *         description: Error interno del servidor
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ServerErrorResponse'
+   */
   // Método para logout - limpia las cookies del cliente
   async logout(_req: Request, res: Response, next: NextFunction) {
     try {
