@@ -8,7 +8,7 @@
     "debug": "tsx --inspect ./src/main.ts",
     "debug:brk": "tsx --inspect-brk ./src/main.ts",
     "start": "node dist/main.js",
-    "build": "tsc",
+    "build": "tsc && cp -r src/generated dist/",
     "migrate:create": "node-pg-migrate create --migration-file-language sql",
     "migrate:up": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
