@@ -23,6 +23,7 @@ import { TaskCreate } from '../../Task/application/TaskCreate/TaskCreate';
 import { TaskDelete } from '../../Task/application/TaskDelete/TaskDelete';
 import { TaskGetAll } from '../../Task/application/TaskGetAll/TaskGetAll';
 import { TaskGetOneById } from '../../Task/application/TaskGetOneById/TaskGetOneById';
+import { TaskReplace } from '../../Task/application/TaskReplace/TaskReplace';
 import { TaskToggleComplete } from '../../Task/application/TaskToggleComplete/TaskToggleComplete';
 import { TaskUpdate } from '../../Task/application/TaskUpdate/TaskUpdate';
 import type { TaskRepository } from '../../Task/domain/TaskRepository';
@@ -91,6 +92,7 @@ export const ServiceContainer = {
     getAll: new TaskGetAll(taskRepository),
     getOneById: new TaskGetOneById(taskRepository),
     update: new TaskUpdate(taskRepository),
+    replace: new TaskReplace(taskRepository),
     delete: new TaskDelete(taskRepository),
     toggleComplete: new TaskToggleComplete(taskRepository),
   },

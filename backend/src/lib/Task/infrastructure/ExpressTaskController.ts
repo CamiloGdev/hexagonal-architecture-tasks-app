@@ -324,6 +324,94 @@ export class ExpressTaskController {
   /**
    * @swagger
    * /tasks/{id}:
+   *   put:
+   *     summary: Reemplazar completamente una tarea existente
+   *     description: Reemplaza completamente una tarea existente con los datos proporcionados (PUT - reemplazo total)
+   *     tags: [Tasks]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *           format: uuid
+   *         description: ID único de la tarea a reemplazar
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/ReplaceTaskRequest'
+   *     responses:
+   *       200:
+   *         description: Tarea reemplazada exitosamente
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Task'
+   *       400:
+   *         description: Datos de entrada inválidos
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ValidationErrorResponse'
+   *       401:
+   *         description: No autorizado - Token JWT requerido
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/UnauthorizedErrorResponse'
+   *       404:
+   *         description: Tarea no encontrada
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/NotFoundErrorResponse'
+   *       500:
+   *         description: Error interno del servidor
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ServerErrorResponse'
+   */
+  async replace(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user?.id as string;
+      const taskId = req.params.id;
+      const {
+        title,
+        description,
+        priority,
+        completed,
+        dueDate,
+        categoryId,
+        tagIds,
+      } = req.body;
+
+      const replacedTask = await ServiceContainer.task.replace.execute({
+        id: taskId as string,
+        userId,
+        title,
+        description,
+        priority,
+        completed,
+        dueDate,
+        categoryId,
+        tagIds,
+      });
+
+      return res.status(200).json(TaskMapper.toResponseDto(replacedTask));
+    } catch (error) {
+      if (error instanceof TaskNotFoundError) {
+        return res.status(404).json({ message: error.message });
+      }
+      next(error);
+    }
+  }
+
+  /**
+   * @swagger
+   * /tasks/{id}:
    *   delete:
    *     summary: Eliminar una tarea
    *     description: Elimina permanentemente una tarea del usuario autenticado

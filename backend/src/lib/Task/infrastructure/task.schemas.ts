@@ -31,27 +31,34 @@ export const createTaskSchema = z.object({
 });
 
 /**
- * Schema for updating a task (PUT - all fields required)
+ * Schema for updating a task (PUT - complete replacement, all required fields)
  */
 export const putTaskSchema = z.object({
   body: z.object({
+    // --- Required Fields ---
     title: z
       .string()
       .min(1, { message: 'Title is required' })
       .max(255, { message: 'Title must be at most 255 characters long' }),
+    completed: z.boolean({ message: 'Completed status is required' }),
+    priority: z.enum(Priority, { message: 'Priority is required' }),
+    categoryId: z.uuid({ message: 'Category ID is required' }),
+
+    // --- Optional Fields (can be null) ---
     description: z
       .string()
       .max(1000, {
         message: 'Description must be at most 1000 characters long',
       })
-      .optional(),
-    priority: z.enum(Priority),
-    completed: z.boolean(),
-    dueDate: z.iso
-      .datetime()
+      .nullable()
       .optional()
-      .transform((val) => (val ? new Date(val) : undefined)),
-    categoryId: z.uuid().optional(),
+      .transform((val) => (val === undefined ? null : val)),
+    dueDate: z.preprocess((arg) => {
+      if (typeof arg === 'string' || arg instanceof Date) return new Date(arg);
+      return null;
+    }, z.date().nullable().optional()),
+
+    // --- Relations ---
     tagIds: TaskTagIdsSchema,
   }),
   params: z.object({

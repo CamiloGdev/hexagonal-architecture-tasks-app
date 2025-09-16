@@ -5,6 +5,7 @@ import type { ExpressTaskController } from './ExpressTaskController';
 import {
   createTaskSchema,
   patchTaskSchema,
+  putTaskSchema,
   taskIdSchema,
   taskQuerySchema,
   toggleCompleteTaskSchema,
@@ -38,6 +39,13 @@ export function registerExpressTaskRoutes(
     '/',
     validate(createTaskSchema),
     taskController.create.bind(taskController),
+  );
+
+  // PUT /api/tasks/:id - Completely replace a task
+  taskRouter.put(
+    '/:id',
+    validate(putTaskSchema),
+    taskController.replace.bind(taskController),
   );
 
   // PATCH /api/tasks/:id - Partially update a task

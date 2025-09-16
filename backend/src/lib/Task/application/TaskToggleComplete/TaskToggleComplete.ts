@@ -1,7 +1,6 @@
-import type { Task } from '../../domain/Task';
 import { TaskId } from '../../domain/TaskId';
 import { TaskNotFoundError } from '../../domain/TaskNotFoundError';
-import type { TaskRepository } from '../../domain/TaskRepository';
+import type { TaskRepository, TaskWithTags } from '../../domain/TaskRepository';
 import { TaskUserId } from '../../domain/TaskUserId';
 
 export interface TaskToggleCompleteRequest {
@@ -13,7 +12,7 @@ export interface TaskToggleCompleteRequest {
 export class TaskToggleComplete {
   constructor(private taskRepository: TaskRepository) {}
 
-  async execute(request: TaskToggleCompleteRequest): Promise<Task> {
+  async execute(request: TaskToggleCompleteRequest): Promise<TaskWithTags> {
     const taskId = new TaskId(request.id);
     const userId = new TaskUserId(request.userId);
 
