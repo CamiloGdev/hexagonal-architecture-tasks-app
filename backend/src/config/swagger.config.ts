@@ -34,6 +34,50 @@ const options: swaggerJsdoc.Options = {
         },
       },
       schemas: {
+        Category: {
+          type: 'object',
+          required: ['id', 'name', 'userId', 'createdAt', 'updatedAt'],
+          properties: {
+            id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'Identificador único de la categoría',
+              example: '123e4567-e89b-12d3-a456-426614174000',
+            },
+            name: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 50,
+              description: 'Nombre de la categoría',
+              example: 'Trabajo',
+            },
+            color: {
+              type: 'string',
+              pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+              nullable: true,
+              description: 'Color de la categoría en formato hexadecimal',
+              example: '#3498DB',
+            },
+            userId: {
+              type: 'string',
+              format: 'uuid',
+              description: 'ID del usuario propietario de la categoría',
+              example: '456e7890-e89b-12d3-a456-426614174001',
+            },
+            createdAt: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Fecha de creación de la categoría',
+              example: '2024-01-01T00:00:00.000Z',
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Fecha de última actualización de la categoría',
+              example: '2024-01-15T10:30:00.000Z',
+            },
+          },
+        },
         Tag: {
           type: 'object',
           required: ['id', 'name', 'userId'],
@@ -53,7 +97,7 @@ const options: swaggerJsdoc.Options = {
             },
             color: {
               type: 'string',
-              pattern: '^#[0-9A-Fa-f]{6}$',
+              pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
               nullable: true,
               description: 'Color de la etiqueta en formato hexadecimal',
               example: '#FF5733',
@@ -493,6 +537,91 @@ const options: swaggerJsdoc.Options = {
               type: 'string',
               description: 'Mensaje de éxito del logout',
               example: 'Logout successful',
+            },
+          },
+        },
+        CreateCategoryRequest: {
+          type: 'object',
+          required: ['name'],
+          properties: {
+            name: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 50,
+              description: 'Nombre de la categoría',
+              example: 'Trabajo',
+            },
+            color: {
+              type: 'string',
+              pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+              description: 'Color de la categoría en formato hexadecimal',
+              example: '#3498DB',
+            },
+          },
+        },
+        UpdateCategoryRequest: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 50,
+              description: 'Nombre de la categoría',
+              example: 'Trabajo Actualizado',
+            },
+            color: {
+              type: 'string',
+              pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+              description: 'Color de la categoría en formato hexadecimal',
+              example: '#2ECC71',
+            },
+          },
+        },
+        CreateTagRequest: {
+          type: 'object',
+          required: ['name'],
+          properties: {
+            name: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 50,
+              description: 'Nombre de la etiqueta',
+              example: 'Urgente',
+            },
+            color: {
+              type: 'string',
+              pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+              description: 'Color de la etiqueta en formato hexadecimal',
+              example: '#FF5733',
+            },
+          },
+        },
+        UpdateTagRequest: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 50,
+              description: 'Nombre de la etiqueta',
+              example: 'Muy Urgente',
+            },
+            color: {
+              type: 'string',
+              pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+              description: 'Color de la etiqueta en formato hexadecimal',
+              example: '#E74C3C',
+            },
+          },
+        },
+        CategoryHasTasksErrorResponse: {
+          type: 'object',
+          properties: {
+            message: {
+              type: 'string',
+              description:
+                'Mensaje de error cuando se intenta eliminar una categoría que tiene tareas asignadas',
+              example: 'Cannot delete category that has tasks assigned to it',
             },
           },
         },
