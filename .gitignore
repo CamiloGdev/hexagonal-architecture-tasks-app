@@ -5,6 +5,7 @@
 # Dist
 node_modules
 dist/
+build/
 
 # Profile
 .rspack-profile-*/

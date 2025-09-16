@@ -2,16 +2,18 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    // "rootDir": "./src",
+    "rootDir": "./src",
     "outDir": "./dist",
-    // "allowJs": true, // Permitir archivos JS
-    "resolveJsonModule": true, // Habilitar la resolución de módulos JSON
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     // "module": "nodenext",
-    "module": "Preserve", // Conservar el tipo de módulo
-    "target": "esnext",
+    "module": "commonjs",
+    // "target": "esnext",
+    "target": "es2016",
+    // "target": "es2020",
+    // "target": "es6",
+    // "moduleResolution": "node",
     "types": [],
     // For nodejs:
     // "lib": ["esnext"],
@@ -37,14 +39,14 @@
 
     // Recommended Options
     "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    // "esModuleInterop": true, // Habilitar interoperabilidad de módulos
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true
+    // "verbatimModuleSyntax": true,
+    "esModuleInterop": true, // Habilitar interoperabilidad de módulos
+    // "isolatedModules": true,
+    // "noUncheckedSideEffectImports": true,
+    // "moduleDetection": "force",
+    // "skipLibCheck": true
   },
   "include": ["src/**/*"], // Incluir archivos
-  "exclude": ["node_modules", "dist"] // Excluir archivos
+  "exclude": ["node_modules", "prisma", "dist"] // Excluir archivos
+  // "exclude": ["node_modules", "build"] // Excluir archivos
 }
