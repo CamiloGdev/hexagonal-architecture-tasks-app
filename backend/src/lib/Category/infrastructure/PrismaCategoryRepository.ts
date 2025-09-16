@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import { Category } from '../domain/Category';
 import { CategoryColor } from '../domain/CategoryColor';
 import { CategoryCreatedAt } from '../domain/CategoryCreatedAt';

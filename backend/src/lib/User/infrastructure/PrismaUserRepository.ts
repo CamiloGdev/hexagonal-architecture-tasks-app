@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import { User } from '../domain/User';
 import { UserCreatedAt } from '../domain/UserCreatedAt';
 import { UserEmail } from '../domain/UserEmail';

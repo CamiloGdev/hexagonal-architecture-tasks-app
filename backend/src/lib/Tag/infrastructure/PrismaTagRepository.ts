@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import { Tag } from '../domain/Tag';
 import { TagColor } from '../domain/TagColor';
 import { TagCreatedAt } from '../domain/TagCreatedAt';

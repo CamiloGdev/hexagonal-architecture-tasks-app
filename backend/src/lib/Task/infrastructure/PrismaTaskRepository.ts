@@ -2,7 +2,7 @@ import {
   type Prisma,
   PrismaClient,
   type Priority as PrismaPriority,
-} from '../../../generated/prisma'; // renombra al importar
+} from '@prisma/client'; // renombra al importar
 import type { Priority } from '../domain/Priority.enum'; // el enum de tu dominio
 import { Task } from '../domain/Task';
 import { TaskCategoryId } from '../domain/TaskCategoryId';
