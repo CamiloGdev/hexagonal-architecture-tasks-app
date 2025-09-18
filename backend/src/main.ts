@@ -23,7 +23,7 @@ import { registerExpressUserRoutes } from './lib/User/infrastructure/ExpressUser
 process.loadEnvFile();
 
 // Puerto de la aplicación
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Crear la aplicación Express
 const app: Express = express();
@@ -95,9 +95,7 @@ app.use('/api', router);
 // Configurar Swagger UI para documentación de la API solo en desarrollo
 if (process.env.NODE_ENV !== 'production') {
   setupSwagger(app);
-  console.log(
-    `Swagger UI disponible en: http://localhost:${PORT || 3000}/api-docs`,
-  );
+  console.log(`Swagger UI disponible en: http://localhost:${PORT}/api-docs`);
 }
 
 // Ruta de health check
