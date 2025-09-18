@@ -138,3 +138,35 @@ form .register-link {
 .register-link p .link-button:hover {
   text-decoration: underline;
 }
+
+/* Error styles */
+.input-box input.error {
+  border-color: #e74c3c;
+  box-shadow: 0 0 5px rgba(231, 76, 60, 0.3);
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  display: block;
+}
+
+.api-error-message {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: #e74c3c;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+/* Button disabled state */
+form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

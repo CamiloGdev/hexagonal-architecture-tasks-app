@@ -10,8 +10,10 @@ import { z } from 'zod';
  * This schema is the single source of truth for user createdAt validation
  * and is aligned with the backend UserCreatedAtSchema.
  */
-export const UserCreatedAtSchema = z.date({
-  message: 'CreatedAt must be a valid date',
-});
+export const UserCreatedAtSchema = z
+  .date()
+  .refine((date) => date <= new Date(), {
+    message: 'CreatedAt must be a valid datetime string',
+  });
 
 export type UserCreatedAtType = z.infer<typeof UserCreatedAtSchema>;
