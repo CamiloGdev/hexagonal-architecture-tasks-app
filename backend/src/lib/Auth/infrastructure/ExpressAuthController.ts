@@ -5,6 +5,7 @@ import { UserAlreadyExistsError } from '../../User/domain/UserAlreadyExistsError
 import { UserNotFoundError } from '../../User/domain/UserNotFoundError';
 import { UserMapper } from '../../User/infrastructure/dtos/user.mapper';
 import {
+  AuthenticationError,
   InvalidTokenError,
   RefreshTokenNotFoundError,
 } from '../domain/AuthenticationError';
@@ -364,6 +365,89 @@ export class ExpressAuthController {
 
       return res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * @swagger
+   * /auth/profile:
+   *   get:
+   *     summary: Obtener perfil del usuario autenticado
+   *     description: Devuelve la información del usuario basado en el token de acceso almacenado en cookies
+   *     tags: [Auth]
+   *     security:
+   *       - cookieAuth: []
+   *     responses:
+   *       200:
+   *         description: Perfil del usuario obtenido exitosamente
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/UserResponseDto'
+   *             example:
+   *               id: "123e4567-e89b-12d3-a456-426614174000"
+   *               name: "Juan Pérez"
+   *               email: "juan.perez@example.com"
+   *               createdAt: "2024-01-01T00:00:00.000Z"
+   *               updatedAt: "2024-01-01T00:00:00.000Z"
+   *       401:
+   *         description: Token de acceso no encontrado
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/UnauthorizedErrorResponse'
+   *             example:
+   *               message: "Authentication required: No token provided."
+   *       403:
+   *         description: Token de acceso inválido o expirado
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ForbiddenErrorResponse'
+   *             example:
+   *               message: "Forbidden: Invalid or expired token."
+   *       404:
+   *         description: Usuario no encontrado
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/NotFoundErrorResponse'
+   *             example:
+   *               message: "User not found"
+   *       500:
+   *         description: Error interno del servidor
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/ServerErrorResponse'
+   */
+  async getProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      // req.user es añadido por el authMiddleware y contiene el payload del token (id, email)
+      if (!req.user) {
+        throw new AuthenticationError('No user found in token payload');
+      }
+
+      const userId = req.user.id;
+      const user = await ServiceContainer.user.getOneById.run(userId);
+
+      return res.status(200).json(UserMapper.toResponseDto(user));
+    } catch (error) {
+      console.error('Error getting user profile:', error);
+
+      if (error instanceof UserNotFoundError) {
+        return res.status(404).json({
+          message: error.message,
+        });
+      }
+
+      if (error instanceof AuthenticationError) {
+        return res.status(401).json({
+          message: error.message,
+        });
+      }
+
       next(error);
     }
   }

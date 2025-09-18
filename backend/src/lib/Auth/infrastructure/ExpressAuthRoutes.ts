@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { authMiddleware } from '../../Shared/infrastructure/authMiddleware';
 import { validate } from '../../Shared/infrastructure/validateRequest';
 import { loginSchema, registerSchema } from './auth.schemas';
 import type { ExpressAuthController } from './ExpressAuthController';
@@ -26,6 +27,13 @@ export function registerExpressAuthRoutes(
 
   // Ruta para logout
   authRouter.post('/logout', authController.logout.bind(authController));
+
+  // Ruta para obtener el perfil del usuario autenticado
+  authRouter.get(
+    '/profile',
+    authMiddleware,
+    authController.getProfile.bind(authController),
+  );
 
   // Registrar las rutas de autenticación en el router principal
   router.use('/auth', authRouter);
