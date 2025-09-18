@@ -36,10 +36,6 @@ export type {
   UserResponseDto,
 } from './infrastructure/dtos/auth.dto';
 export {
-  authHttpClient,
-  setupTokenRefresh,
-} from './infrastructure/http/authHttpClient';
-export {
   fromAuthResponseDto,
   fromUserResponseDto,
   toLoginRequestDto,

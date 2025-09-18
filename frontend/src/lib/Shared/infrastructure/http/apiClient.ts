@@ -10,11 +10,11 @@ import {
   NetworkError,
   UnauthorizedError,
   ValidationError,
-} from '../../domain/AuthError';
-import type { ApiErrorDto } from '../dtos/auth.dto';
+} from '../../../Auth/domain/AuthError';
+import type { ApiErrorDto } from '../../../Auth/infrastructure/dtos/auth.dto';
 
 // Create axios instance with base configuration
-const createAuthHttpClient = (): AxiosInstance => {
+const createApiClient = (): AxiosInstance => {
   const client = axios.create({
     baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
     timeout: 10000,
@@ -50,36 +50,34 @@ const createAuthHttpClient = (): AxiosInstance => {
     async (error: AxiosError<ApiErrorDto>) => {
       console.error('Response interceptor error:', error);
 
-      // Handle network errors
       if (!error.response) {
-        throw new NetworkError('Network error - please check your connection');
+        // Network error (no response received)
+        throw new NetworkError(
+          'Network error: Unable to connect to the server',
+        );
       }
 
       const { status, data } = error.response;
       const message = data?.message || error.message || 'An error occurred';
 
-      // Map HTTP status codes to domain errors
+      // Handle common HTTP errors that are universal across all modules
       switch (status) {
-        case 400:
-          // Check if it's a validation error with details
-          if (data?.details && Array.isArray(data.details)) {
-            const firstError = data.details[0];
-            throw new ValidationError(firstError.message, firstError.field);
-          }
-          throw new ValidationError(message);
-
         case 401:
           throw new UnauthorizedError(message);
-
         case 409:
           throw new ConflictError(message);
-
-        case 404:
-          throw new AuthError(message, status);
-
+        case 400:
+          // Generic validation error - specific modules can catch and re-throw with more context
+          throw new ValidationError(message);
         case 500:
+        case 502:
+        case 503:
+        case 504:
+          throw new AuthError(`Server error: ${message}`, status);
         default:
-          throw new AuthError(message, status);
+          // For other errors (like 404, 422, etc.), let them pass through
+          // so that specific repositories can handle them with domain-specific context
+          throw error;
       }
     },
   );
@@ -87,8 +85,8 @@ const createAuthHttpClient = (): AxiosInstance => {
   return client;
 };
 
-// Singleton instance
-export const authHttpClient = createAuthHttpClient();
+// Singleton instance - shared across all modules
+export const apiClient = createApiClient();
 
 // Token refresh functionality
 export const setupTokenRefresh = (
@@ -113,8 +111,8 @@ export const setupTokenRefresh = (
     failedQueue = [];
   };
 
-  // Add response interceptor for automatic token refresh
-  authHttpClient.interceptors.response.use(
+  // Add response interceptor for token refresh logic
+  apiClient.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
       const originalRequest = error.config as InternalAxiosRequestConfig & {
@@ -123,12 +121,12 @@ export const setupTokenRefresh = (
 
       if (error.response?.status === 401 && !originalRequest._retry) {
         if (isRefreshing) {
-          // If already refreshing, queue the request
+          // If already refreshing, queue this request
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject });
           })
             .then(() => {
-              return authHttpClient(originalRequest);
+              return apiClient(originalRequest);
             })
             .catch((err) => {
               return Promise.reject(err);
@@ -139,16 +137,17 @@ export const setupTokenRefresh = (
         isRefreshing = true;
 
         try {
-          // Attempt to refresh the token
-          await authHttpClient.post('/auth/refresh');
+          // Try to refresh the token
+          await apiClient.post('/auth/refresh');
           processQueue(null);
           onRefreshSuccess?.();
 
           // Retry the original request
-          return authHttpClient(originalRequest);
+          return apiClient(originalRequest);
         } catch (refreshError) {
           processQueue(refreshError);
           onRefreshFailed?.();
+          isRefreshing = false;
           return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;
@@ -159,3 +158,6 @@ export const setupTokenRefresh = (
     },
   );
 };
+
+// Export the client creation function for testing purposes
+export { createApiClient };

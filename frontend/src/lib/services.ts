@@ -1,9 +1,6 @@
 // Service configuration and dependency injection
-import {
-  createAuthService,
-  createAxiosAuthRepository,
-  setupTokenRefresh,
-} from './Auth';
+import { createAuthService, createAxiosAuthRepository } from './Auth';
+import { setupTokenRefresh } from './Shared';
 
 // Create repository instances
 const authRepository = createAxiosAuthRepository();
