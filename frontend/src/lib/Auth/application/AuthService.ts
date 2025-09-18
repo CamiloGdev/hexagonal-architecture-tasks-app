@@ -96,14 +96,18 @@ export const createAuthService = (repository: AuthRepository) => {
           return await repository.logout();
         },
         onSuccess: () => {
-          // Clear all auth-related data from cache
-          queryClient.removeQueries({ queryKey: AUTH_QUERY_KEYS.user });
+          console.log('Logout successful - setting user data to null');
+          // Set user data to null to trigger immediate re-render
+          queryClient.setQueryData(AUTH_QUERY_KEYS.user, null);
+          // Clear refresh token data
           queryClient.removeQueries({ queryKey: AUTH_QUERY_KEYS.refresh });
+          console.log('User data set to null, should trigger re-render');
         },
         onError: (error) => {
           console.error('Logout failed:', error);
+          console.log('Logout failed - setting user data to null anyway');
           // Even if logout fails on server, clear local data
-          queryClient.removeQueries({ queryKey: AUTH_QUERY_KEYS.user });
+          queryClient.setQueryData(AUTH_QUERY_KEYS.user, null);
           queryClient.removeQueries({ queryKey: AUTH_QUERY_KEYS.refresh });
         },
       });
@@ -124,9 +128,12 @@ export const createAuthService = (repository: AuthRepository) => {
             return null;
           }
         },
-        staleTime: Infinity, // El perfil del usuario no cambia a menos que se edite
+        staleTime: 0, // Siempre considerar los datos como stale para permitir actualizaciones inmediatas
         gcTime: 1000 * 60 * 60, // 1 hora
         retry: false, // No reintentar si falla la primera vez (significa que no está logueado)
+        refetchOnWindowFocus: true, // Refetch cuando la ventana recibe foco
+        refetchOnMount: true, // Refetch cuando el componente se monta
+        notifyOnChangeProps: 'all', // Notificar sobre todos los cambios de propiedades
       });
     },
   };

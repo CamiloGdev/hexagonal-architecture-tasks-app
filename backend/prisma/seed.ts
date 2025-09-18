@@ -108,7 +108,7 @@ async function seedUsers() {
 
   for (let i = 1; i <= 3; i++) {
     const email = `user${i}@taskapp.com`;
-    const password = `password${i}23!`; // Simple but meets validation requirements
+    const password = `Password${i}23!`; // Simple but meets validation requirements
     const passwordHash = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
@@ -277,9 +277,9 @@ async function main() {
 
     console.log('✨ Database seeding completed successfully!');
     console.log('\n📋 Test Users Created:');
-    console.log('Email: user1@taskapp.com | Password: password123!');
-    console.log('Email: user2@taskapp.com | Password: password223!');
-    console.log('Email: user3@taskapp.com | Password: password323!');
+    console.log('Email: user1@taskapp.com | Password: Password123!');
+    console.log('Email: user2@taskapp.com | Password: Password223!');
+    console.log('Email: user3@taskapp.com | Password: Password323!');
   } catch (error) {
     console.error('❌ Error seeding database:', error);
     throw error;
